@@ -1,3 +1,18 @@
+// Deduplicate menu items by page ID to fix corrupted menu data
+(function() {
+  var seenPages = {};
+
+  $('[data-page-id]').each(function() {
+    var pageId = $(this).attr('data-page-id');
+
+    if (seenPages[pageId]) {
+      $(this).remove();
+    } else {
+      seenPages[pageId] = true;
+    }
+  });
+})();
+
 if (Modernizr.backdropfilter) {
   $('.body').addClass('backdropfilter');
 }
