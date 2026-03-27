@@ -1,14 +1,19 @@
-// Deduplicate menu items by page ID to fix corrupted menu data
+// Remove stale master page references that should have been replaced by production pages
 (function() {
-  var seenPages = {};
+  var appPages = Fliplet.Env.get('appPages') || [];
+  var masterPageIds = {};
 
-  $('[data-page-id]').each(function() {
+  appPages.forEach(function(p) {
+    if (p.masterPageId) {
+      masterPageIds[p.masterPageId] = true;
+    }
+  });
+
+  $('li[data-page-id]').each(function() {
     var pageId = $(this).attr('data-page-id');
 
-    if (seenPages[pageId]) {
+    if (pageId && masterPageIds[pageId]) {
       $(this).remove();
-    } else {
-      seenPages[pageId] = true;
     }
   });
 })();
