@@ -1,5 +1,5 @@
 // Remove stale master page references that should have been replaced by production pages
-(function() {
+Fliplet().then(function() {
   var appPages = Fliplet.Env.get('appPages') || [];
   var masterPageIds = {};
 
@@ -9,14 +9,19 @@
     }
   });
 
-  $('li[data-page-id]').each(function() {
-    var pageId = $(this).attr('data-page-id');
+  $('.fl-menu li[data-fl-navigate]').each(function() {
+    try {
+      var action = JSON.parse($(this).attr('data-fl-navigate'));
+      var pageId = action && action.page;
 
-    if (pageId && masterPageIds[pageId]) {
-      $(this).remove();
+      if (pageId && masterPageIds[pageId]) {
+        $(this).remove();
+      }
+    } catch (e) {
+      // Skip items with invalid JSON
     }
   });
-})();
+});
 
 if (Modernizr.backdropfilter) {
   $('.body').addClass('backdropfilter');
